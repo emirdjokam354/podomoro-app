@@ -6,7 +6,7 @@ let isFocus = true;
 let endTime = null;
 
 const alertSound = document.getElementById("alertSound");
-const countdownBeep = new Audio("../PodomoroApp/asset/soundcountdown.wav");
+const countdownBeep = new Audio("asset/countdown.mp3");
 
 function formatTime(seconds) {
   const min = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -16,6 +16,30 @@ function formatTime(seconds) {
 
 function updateTimerDisplay(seconds) {
   document.getElementById("timer").textContent = formatTime(seconds);
+}
+
+function getTodayKey() {
+  const today = new Date();
+  return today.toISOString().split("T")[0]; // YYYY-MM-DD
+}
+
+function incrementDailySessions() {
+  const todayKey = getTodayKey();
+  const dailyData = JSON.parse(localStorage.getItem("dailySessions") || "{}");
+  if (dailyData[todayKey]) {
+    dailyData[todayKey] += 1;
+  } else {
+    dailyData[todayKey] = 1;
+  }
+  localStorage.setItem("dailySessions", JSON.stringify(dailyData));
+  document.getElementById("sessions").textContent = `Sesi Hari Ini: ${dailyData[todayKey]}`;
+}
+
+function loadDailySessions() {
+  const todayKey = getTodayKey();
+  const dailyData = JSON.parse(localStorage.getItem("dailySessions") || "{}");
+  const count = dailyData[todayKey] || 0;
+  document.getElementById("sessions").textContent = `Sesi Hari Ini: ${count}`;
 }
 
 function tick() {
@@ -35,17 +59,22 @@ function tick() {
 
     if (isFocus) {
       sessions++;
-      alertSound.play();
-      document.getElementById("sessions").textContent = `Sesi Selesai: ${sessions}`;
+      document.getElementById("sessions").textContent = `Sesi Hari ini : ${sessions}`;
+      incrementDailySessions();
       const task = document.getElementById("taskInput").value.trim();
       const duration = parseInt(document.getElementById("focusInput").value) || 25;
       if (task) saveTaskToHistory(task, duration);
-      alert("Waktu Istirahat! 🎉");
+      alertSound.play();
+      setTimeout(() => {
+        alert("Waktu Istirahat! 🎉");
+      }, 0);
       isFocus = false;
       startTimer(); // Mulai otomatis istirahat
     } else {
       alertSound.play();
-      alert("Waktu Fokus Lagi! 💪");
+      setTimeout(() => {
+        alert("Waktu Fokus Lagi! 💪");
+      }, 0);
       isFocus = true;
       const focusDuration = parseInt(document.getElementById("focusInput").value) || 25;
       time = focusDuration * 60;
@@ -104,7 +133,9 @@ function deleteTask(index) {
 
 function clearHistory() {
   localStorage.removeItem("taskHistory");
+  localStorage.removeItem("dailySessions");
   loadTaskHistory();
+  loadDailySessions();
 }
 
 function loadTaskHistory() {
@@ -134,3 +165,4 @@ document.getElementById("taskInput").addEventListener("input", () => {
 
 updateTimerDisplay(time);
 loadTaskHistory();
+loadDailySessions(); // ← ini penting agar "Sesi Hari Ini" muncul dari localStorage saat pertama kali
