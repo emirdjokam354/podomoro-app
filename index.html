@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Podomoro App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container glass">
+      <h1>🍅 Pomodoro Timer</h1>
+
+      <h2>Tugas:</h2>
+      <input type="text" id="taskInput" placeholder="Tulis tugas kamu di sini..." />
+      <p id="taskDisplay">Belum ada tugas.</p>
+
+      <div class="config">
+        <label>Fokus: <input type="number" id="focusInput" value="25" min="1" /> menit</label>
+        <label>Istirahat: <input type="number" id="breakInput" value="5" min="1" /> menit</label>
+      </div>
+
+      <div id="timer" class="timer">25:00</div>
+
+      <div class="controls">
+        <button id="startBtn">▶️ Mulai</button>
+        <button id="pauseBtn">⏸ Jeda</button>
+        <button id="resetBtn">🔁 Reset</button>
+        <button id="clearHistoryBtn" class="clear-history">🗑 Hapus Riwayat</button>
+      </div>
+
+      <p id="sessions">Sesi Selesai: 0</p>
+
+      <h3>📋 Daftar Tugas Selesai:</h3>
+      <ul id="taskHistory"></ul>
+
+       <!-- Tambahan audio notifikasi -->
+    <audio id="alertSound" src="../PodomoroApp/asset/digitalclockalarm.wav" preload="auto"></audio>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
